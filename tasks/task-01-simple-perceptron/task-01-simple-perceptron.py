@@ -15,24 +15,43 @@ class Perceptron:
         rng = np.random.default_rng(self.seed)
         ### START CODE HERE ###
         ### TODO: Initialize weights with small Gaussian noise using rng.normal
-
+        self.weights = rng.normal(0, 0.01, size=self.input_size + 1)
         ### END CODE HERE ###
 
     def activation(self, x):
         ### START CODE HERE ###
         ### TODO: Implement the step activation function
+        return np.where(x >= 0, 1, -1)
         pass
         ### END CODE HERE ###
 
     def predict(self, X):
         ### START CODE HERE ###
         ### TODO: Add a bias term to X, compute dot product with weights, and apply activation
+        X_bias = np.hstack([X, np.ones((X.shape[0], 1))])  
+        z = np.dot(X_bias, self.weights)  
+        return self.activation(z)  
         pass
         ### END CODE HERE ###
 
     def fit(self, X, y):
         ### START CODE HERE ###
         ### TODO: Implement the perceptron learning rule using weight updates
+        rng = np.random.default_rng(self.seed)
+
+        for epoch in range(self.epochs):
+            indices = rng.permutation(len(X))
+            for i in indices:
+                x_i = X[i]
+                y_i = y[i]
+                
+                x_i_bias = np.append(x_i, 1)
+                
+                z = np.dot(x_i_bias, self.weights)
+                y_pred = self.activation(z)
+                
+                if y_pred != y_i:
+                    self.weights += self.learning_rate * y_i * x_i_bias
         pass
         ### END CODE HERE ###
 
